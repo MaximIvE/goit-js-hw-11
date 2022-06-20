@@ -1,1 +1,1 @@
-{"mappings":"AAAAA,QAAQC,IAAI","sources":["src/index.js"],"sourcesContent":["console.log(\"Запустився скрипт в index.js. Все добре!\")"],"names":["console","log"],"version":3,"file":"index.33fa4e74.js.map"}
+{"mappings":"AAAAA,QAAQC,IAAI","sources":["src/index.js"],"sourcesContent":["console.log(\"Запустився скрипт в index.js. Все добре!\");"],"names":["console","log"],"version":3,"file":"index.33fa4e74.js.map"}
