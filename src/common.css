@@ -1,3 +1,9 @@
+:root {
+  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration: 250ms;
+}
+
+
 body {
   background-color: #fafafa;
   color: #212121;
@@ -7,11 +13,8 @@ body {
 fieldset{
   background-color: #4056b4;
   padding: 10px 0;
+  margin-bottom:10px;
   border: none;
-}
-
-hr{
-  margin:4px 0;
 }
 
 .search-form {
@@ -45,4 +48,52 @@ button[type="submit"]{
   width:20px;
   background: url(./img/search.svg) no-repeat;
   background-position: 1px;
+}
+
+.gallery{
+  display: grid;
+  max-width: 1140px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-auto-rows: 240px;
+  grid-gap: 12px;
+  justify-content: center;
+  padding: 0;
+  /* list-style: none; */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.photo-card:hover{
+  transform: scale(1.03);
+}
+.photo-card{
+  /* position: relative; */
+  border: 1px solid #aaa;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  
+    transition: transform var(--animation-duration) var(--timing-function);
+  
+}
+
+img{
+  height: 70%;
+  width: 100%;
+  object-fit: cover;
+
+}
+
+.info{
+  font-size: 14px;
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.info-item{
+  display: flex;
+  display: flex;
+    flex-direction: column;
+    align-items: center;
 }
