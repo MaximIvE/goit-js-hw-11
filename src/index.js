@@ -1,5 +1,5 @@
-import axios from "axios";
-import createCard from "../../goit-js-hw-10/src/createCard";
+// import axios from "axios";
+const axios = require('axios').default;
 
 const refs = {
 form: document.querySelector('.search-form'),
@@ -16,10 +16,6 @@ async function onSearch(e){
     const gallery = await createGallery(answer);
     refs.galleryEl.insertAdjacentHTML("beforeend", gallery);
 
-    // console.log(gallery);
-
-    
-    // console.log(answer[0]);
 }
 
 async function getAnswer(searchQuery) {
