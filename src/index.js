@@ -1,6 +1,10 @@
 // import axios from "axios";
 const axios = require('axios').default;
 import Notiflix from 'notiflix';
+// Описаний в документації
+import SimpleLightbox from "simplelightbox";
+// Додатковий імпорт стилів
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const refs = {
 form: document.querySelector('.search-form'),
@@ -16,6 +20,9 @@ let newQuery = "";
 let searchQuery="";
 let page =1;
 let remove = false;
+let galleryImg = new SimpleLightbox('.gallery a');
+
+
 
 refs.form.addEventListener('submit', (e) =>{
   e.preventDefault();
@@ -76,7 +83,7 @@ async function onSearch(){
 
     if((page === 1)||remove){ 
       Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-    }
+    };
 
     if(remove){
       refs.galleryEl.innerHTML = '';
@@ -85,6 +92,9 @@ async function onSearch(){
 
     refs.galleryEl.insertAdjacentHTML("beforeend", gallery);
 
+    
+    
+
     //Тут ще перевірка на останній лист.
     const numberOfLetters = Math.ceil(totalHits / 40);
     if(numberOfLetters === page){
@@ -92,13 +102,17 @@ async function onSearch(){
 
       refs.pElement.classList.remove('visually-hidden');
       remove = true;
+      onGallery();
       return;
-    }
+    };
+
 
     refs.buttonMore.classList.remove('visually-hidden');
     refs.buttonSearch.disabled = false;
 
     page = page+1;
+
+    onGallery();
 };
 
 async function getAnswer(searchQuery) {
@@ -135,8 +149,11 @@ function createGallery(arr){
 
 function createOneCard(card){
     const {webformatURL, largeImageURL, tags, likes, views, comments, downloads} = card;
+
     return `<div class="photo-card">
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+    <a href="${largeImageURL}">
+      <img src="${webformatURL}" alt="${tags}" loading="lazy" title=""/>
+    </a>
     <div class="info">
       <p class="info-item">
         <b>Likes</b>${likes}
@@ -154,3 +171,7 @@ function createOneCard(card){
   </div>`
 };
 
+function onGallery(){
+  galleryImg.refresh();
+  galleryImg.on();
+};
