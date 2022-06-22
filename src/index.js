@@ -1,5 +1,6 @@
 // import axios from "axios";
 const axios = require('axios').default;
+import Notiflix from 'notiflix';
 
 const refs = {
 form: document.querySelector('.search-form'),
@@ -27,7 +28,7 @@ function selecterButton(e){
   
   const valueInput = e.currentTarget.elements.searchQuery.value.trim();
   if ((page > 1)&(searchQuery === valueInput)){
-    refs.buttonSearch.disabled = true;
+    // refs.buttonSearch.disabled = true;
     refs.buttonMore.classList.remove('visually-hidden');
   }else{
     refs.buttonSearch.disabled = false;
@@ -43,14 +44,13 @@ async function onSearch(){
     newQuery = refs.form.elements[0].value.trim();
     if (newQuery ===""){
       refs.buttonSearch.disabled = false;
+      Notiflix.Notify.info('Enter search data, please!');
       if(page > 1){
         page = 1;
         remove = true;
         refs.pElement.classList.add('visually-hidden');
-        alert('Введіть дані для пошуку');
         return;
       };
-      alert('Введіть дані для пошуку');
       return;
     };
 
@@ -65,13 +65,18 @@ async function onSearch(){
     };
 
     const answer = await getAnswer(searchQuery);
-    if (answer.totalHits === 0){
-      alert('Нічого не знайдено');
+    // console.log(answer);
+    const totalHits = answer.totalHits;
+    if (totalHits === 0){
+      Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
       refs.buttonSearch.disabled = false;
       return;
     };
-    
     const gallery = await createGallery(answer.hits);
+
+    if((page === 1)||remove){ 
+      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    }
 
     if(remove){
       refs.galleryEl.innerHTML = '';
@@ -81,7 +86,7 @@ async function onSearch(){
     refs.galleryEl.insertAdjacentHTML("beforeend", gallery);
 
     //Тут ще перевірка на останній лист.
-    const numberOfLetters = Math.ceil(answer.totalHits / 40);
+    const numberOfLetters = Math.ceil(totalHits / 40);
     if(numberOfLetters === page){
       refs.buttonMore.classList.add('visually-hidden');
 
@@ -92,7 +97,7 @@ async function onSearch(){
 
     refs.buttonMore.classList.remove('visually-hidden');
     refs.buttonSearch.disabled = false;
-    
+
     page = page+1;
 };
 
@@ -110,7 +115,6 @@ async function getAnswer(searchQuery) {
         'per_page': 40,
       },
     };
-    // console.log(page);
 
     try {
     const response = await axios.get(url, options);
