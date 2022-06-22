@@ -16,6 +16,7 @@ fieldset{
   background-color: #4056b4;
   padding: 10px 0;
   top: 0;
+  left: 0;
   border: none;
   position:fixed;
   width: 100%;
@@ -32,13 +33,14 @@ margin-right: auto;
 }
 
 input[type="text"]{
-  padding: 2px 20px 2px 2px;
+  padding: 4px 24px 4px 4px;
   width: 100%;
   border-style: none;
   border: 1px solid #aaa;
-  border-radius: 2px;
+  border-radius: 4px;
   vertical-align: middle;
-  height: 16px;
+  /* height: 16px; */
+  font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -47,8 +49,8 @@ button[type="submit"]{
   border: 0;
   cursor: pointer;
   overflow: hidden;
-  top: 5px;
-  left: calc(100% + 4px);
+  top: 7px;
+  left: calc(100% + 8px);
   text-indent: -999px;
   height: 16px;
   width:16px;
@@ -63,11 +65,9 @@ button[type="submit"]{
   grid-auto-rows: 240px;
   grid-gap: 12px;
   justify-content: center;
-  padding: 0;
-  /* list-style: none; */
   margin-left: auto;
   margin-right: auto;
-  padding: 60px;
+  padding: 60px 0 20px;
 }
 
 .photo-card:hover{
@@ -97,10 +97,11 @@ img{
   display: flex;
   justify-content: space-around;
   height: 100%;
+  position: relative;
+  height: 25%;
 }
 
 .info-item{
-  display: flex;
   display: flex;
     flex-direction: column;
     align-items: center;
