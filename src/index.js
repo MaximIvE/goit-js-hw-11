@@ -6,71 +6,95 @@ form: document.querySelector('.search-form'),
 buttonSearch: document.querySelector('button[type="submit"]'),
 buttonMore: document.querySelector('button[type="button"]'),
 galleryEl: document.querySelector('.gallery'),
+pElement: document.querySelector('.notification-text'),
 };
 
-// console.log(refs.buttonSearch);
-console.dir(refs.buttonMore);
-
-let page =1;
-//це значення інпуту, що вводимо з клави
-let requestInput = "cat";
-// це значення інпуту під час запросу
-let searchQuery=" ";
-
-refs.form[0].value = 'cat';
-// refs.buttonMore.disabled = true;
+// це початкові значення форми при перезавантаженні
 refs.buttonMore.classList.add('visually-hidden');
+let newQuery = "";
+let searchQuery="";
+let page =1;
+let remove = false;
 
-refs.form.addEventListener('submit', onSearch);
+refs.form.addEventListener('submit', (e) =>{
+  e.preventDefault();
+  onSearch();}
+  );
 refs.form.addEventListener('input', selecterButton);
-refs.buttonMore.addEventListener('click', onMoreSearch);
+refs.buttonMore.addEventListener('click', onSearch);
 
 function selecterButton(e){
-  refs.buttonSearch.disabled = false;
-  // console.log(e.currentTarget.elements.searchQuery.value);
-  requestInput = e.currentTarget.elements.searchQuery.value;
-  console.log(`${searchQuery} & ${requestInput}`)
-  if ((requestInput === searchQuery)&(searchQuery)){
+  
+  const valueInput = e.currentTarget.elements.searchQuery.value.trim();
+  if ((page > 1)&(searchQuery === valueInput)){
     refs.buttonSearch.disabled = true;
-    refs.buttonMore.disabled = false;
+    refs.buttonMore.classList.remove('visually-hidden');
   }else{
     refs.buttonSearch.disabled = false;
-    refs.buttonMore.disabled = true;
-  }
+    refs.buttonMore.classList.add('visually-hidden');
+  };
 };
 
+async function onSearch(){
+    
+    refs.buttonSearch.disabled = true;
+    refs.buttonMore.classList.add('visually-hidden');
 
-async function onSearch(e){
-    e.preventDefault();
-    searchQuery = e.currentTarget.elements.searchQuery.value.trim();
-    if (searchQuery ===""){
-      return alert('Please, enter a search query');
+    newQuery = refs.form.elements[0].value.trim();
+    if (newQuery ===""){
+      refs.buttonSearch.disabled = false;
+      if(page > 1){
+        page = 1;
+        remove = true;
+        refs.pElement.classList.add('visually-hidden');
+        alert('Введіть дані для пошуку');
+        return;
+      };
+      alert('Введіть дані для пошуку');
+      return;
     };
 
-    page = 1;
-    refs.galleryEl.innerHTML = '';
-    refs.buttonSearch.disabled = true;
-    refs.buttonMore.disabled = false;
+    if (newQuery !== searchQuery){
+      searchQuery = newQuery;
+      refs.pElement.classList.add('visually-hidden');
 
-    refs.buttonSearch.classList.add('no-pointer');
-
-    
+      if (page > 1){
+        page =1;
+        remove = true;
+      };
+    };
 
     const answer = await getAnswer(searchQuery);
-    const gallery = await createGallery(answer);
+    if (answer.totalHits === 0){
+      alert('Нічого не знайдено');
+      refs.buttonSearch.disabled = false;
+      return;
+    };
+    
+    const gallery = await createGallery(answer.hits);
+
+    if(remove){
+      refs.galleryEl.innerHTML = '';
+      remove = false;
+    };
+
     refs.galleryEl.insertAdjacentHTML("beforeend", gallery);
 
-    refs.buttonMore.classList.remove('visually-hidden');
-    // refs.buttonMore.disabled = false;
-    
-    
-};
+    //Тут ще перевірка на останній лист.
+    const numberOfLetters = Math.ceil(answer.totalHits / 40);
+    if(numberOfLetters === page){
+      refs.buttonMore.classList.add('visually-hidden');
 
-async function onMoreSearch(e){
-  const answer = await getAnswer(searchQuery);
-  const gallery = await createGallery(answer);
-  refs.galleryEl.insertAdjacentHTML("beforeend", gallery);
-}
+      refs.pElement.classList.remove('visually-hidden');
+      remove = true;
+      return;
+    }
+
+    refs.buttonMore.classList.remove('visually-hidden');
+    refs.buttonSearch.disabled = false;
+    
+    page = page+1;
+};
 
 async function getAnswer(searchQuery) {
     const KEY = '28160645-02600786ca706ffa5b60b520e';
@@ -83,16 +107,15 @@ async function getAnswer(searchQuery) {
         'safesearch': 'true',
         'q': searchQuery,
         'page': page,
-        'per_page': 3,
+        'per_page': 40,
       },
     };
-    console.log(page);
+    // console.log(page);
 
     try {
     const response = await axios.get(url, options);
-    page = page+1;
     
-    return response.data.hits;
+    return response.data;
 
   } catch (error) {
    alert(error.message);
@@ -126,3 +149,4 @@ function createOneCard(card){
     </div>
   </div>`
 };
+
