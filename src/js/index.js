@@ -62,8 +62,8 @@ async function onSearch(){
     
     const gallery = await createGallery(answer.hits);
     renderGallery(refs.galleryEl, gallery, imgService.isnewquerty);
-    galleryImg.refresh();
     
+    galleryImg.refresh();
     useByttons();
 };
 
