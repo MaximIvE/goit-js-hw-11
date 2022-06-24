@@ -51,7 +51,7 @@ async function onSearch(){
 
     //Якщо інформації по запиту не знайдено, виходим
     if (totalHits === 0){
-      useByttons();
+      if ( imgService.query !== ""){useByttons()}else{refs.buttonSearch.disabled = false;};
       return Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
     };
 
